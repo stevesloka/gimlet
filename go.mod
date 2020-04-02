@@ -1,4 +1,4 @@
-module stevesloka/gimlet
+module github.com/stevesloka/gimlet
 
 go 1.14
 
