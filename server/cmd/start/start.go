@@ -14,6 +14,8 @@ type flagSet struct {
 	PeerCert    string
 	PeerKey     string
 	Port        uint32
+	InCluster   bool
+	Kubeconfig  string
 }
 
 // NewCommand returns a new Command instance for the start subcommand.
@@ -26,7 +28,7 @@ func NewCommand() *cobra.Command {
 		Long:  "Start the server",
 		Run: func(cmd *cobra.Command, args []string) {
 			lifecycle.Start(flags.RootCACerts, flags.PeerCert,
-				flags.PeerKey, flags.Port)
+				flags.PeerKey, flags.Port, flags.InCluster, flags.Kubeconfig)
 		},
 	}
 
@@ -34,6 +36,8 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().StringVar(&flags.PeerCert, "peer-cert", "", "the peer certificate path")
 	cmd.Flags().StringVar(&flags.PeerKey, "peer-key", "", "the peer key path")
 	cmd.Flags().Uint32Var(&flags.Port, "port", 8000, "the port to listen for requests on")
+	cmd.Flags().BoolVar(&flags.InCluster, "incluster", false, "Use in cluster configuration.")
+	cmd.Flags().StringVar(&flags.Kubeconfig, "kubeconfig", "", "Path to kubeconfig (if not in running inside a cluster).")
 
 	cmd.MarkFlagRequired("root-ca-cert")
 	cmd.MarkFlagRequired("peer-cert")

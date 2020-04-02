@@ -73,7 +73,8 @@ start-server:
 		--root-ca-cert rootCA.crt \
 		--peer-cert server.crt \
 		--peer-key server.key \
-		--port 8001
+		--port 8001 \
+		--kubeconfig ~/.kube/config
 
 # Start the client
 # Usage: make start-client
