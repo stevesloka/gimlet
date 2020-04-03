@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gimlet
+  name: gimlet
+  namespace: gimlet
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # This value of maxSurge means that during a rolling update
+      # the new ReplicaSet will be created first.
+      maxSurge: 50%
+  selector:
+    matchLabels:
+      app: gimlet
+  template:
+    metadata:
+      labels:
+        app: gimlet
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: gimlet
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      containers:
+        - args:
+            - start
+            - --root-ca-cert
+            - /certs/rootCA.crt
+            - --peer-cert
+            - /certs/server.crt
+            - --peer-key
+            - /certs/server.key
+            - --port
+            - "8001"
+          command: ["gimlet-server"]
+          image: stevesloka/gimlet
+          imagePullPolicy: Always
+          name: gimlet
+          ports:
+            - containerPort: 8001
+              hostPort: 8001
+              name: coms
+              protocol: TCP
+          volumeMounts:
+            - name: gimletcerts
+              mountPath: /certs
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      serviceAccountName: gimlet
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+      volumes:
+        - name: gimletcerts
+          secret:
+            secretName: gimletcerts
