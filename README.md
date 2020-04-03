@@ -19,7 +19,6 @@ Save following as `kind.config.yaml`:
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
-# - role: worker
 - role: control-plane
 - role: worker
   extraPortMappings:
