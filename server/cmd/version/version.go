@@ -10,7 +10,7 @@ import (
 )
 
 // version represents the server version.
-const version = "0.1.0"
+const version = "0.0.0"
 
 // versionCmd represents the command to be executed when called with the version
 // subcommand.
